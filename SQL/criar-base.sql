@@ -16,7 +16,7 @@
 -- Criar a base de dados
 DROP DATABASE IF NOT EXIST Typhon;
 CREATE DATABASE Typhon;
-USE DATABESE Typhon
+USE DATABESE Typhon;
 
 -- Tabela Lingua
 DROP TABLE Lingua;
