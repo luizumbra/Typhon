@@ -16,7 +16,7 @@
  *
  * Desenvolvedores:
  * ===============
- *   Autor da monografia foi Ms. Kike Jun Ogawa.
+ *   Autor da monografia foi Ms. Mike Jun Ogawa.
  *   Desenvolvido por Luiz Antonio Marques Ferreira.
  *   Orientado pelo Prof. Dr. Nizam Omar
  *
@@ -140,6 +140,30 @@ CREATE TABLE Grau(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 		  grau VARCHAR(25));
 
 /*
+ * Tabela Dados
+ * ============
+ *
+ * Descrição:
+ * =========
+ *   Palavra entregue.
+ *
+ * Exemplo:
+ * =======
+ * | id | palavra	 | id_classe  | id_tipo | id_genero | id_grau | eh_composta | id_Relacao |
+ * | 1	| 'gato'  	 | 1	      |	1	| 1	    | 3	      |	FALSE	    | NULL	 |
+ * | 2	| 'flor-de-lins' | 1	      |	2	| 3	    | 3	      | TRUE	    | NULL	 |
+ */
+DROP TABLE Dados;
+CREATE TABLE Dados(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	     	   palavra VARCHAR(100) NOT NULL,
+		   id_classe INT UNSIGNED REFERENCES Classe(id),
+		   id_tipo INT UNSIGNED REFERENCES Tipo(id),
+		   id_genero INT UNSIGNED REFERENCES Genero(id),
+		   id_grau INT UNSIGNED REFERENCES Grau(id),
+		   eh_composta BOOLEAN,
+		   id_relacao INT UNSIGNED); -- FIXME, descobrir para que serve id_relacao
+
+/*
  * Tabela Dicionário
  * =================
  *
@@ -149,19 +173,14 @@ CREATE TABLE Grau(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
  *
  * Exemplo:
  * =======
- * | id | palavra | id_classe | id_tipo | id_genero | id_grau | eh_composta | tem_relacao |
- * | 1	| homem	  | 1	      | 2	| 1	    | NULL    | FALSE	    | NULL	  |
- * | 2	| escada  | 1	      | 2	| 2	    | NULL    | FALSE	    | NULL	  |
+ * | id | descricao	  | id_dado |
+ * | 1	| Substantivo	  | 1	    |
+ * | 2	| 		  | 1	    |
  */
 DROP TABLE Dicionario;
-CREATE TABLE Dados(id_dado INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-		   palavra VARCHAR(125) NOT NULL,
-		   id_classe INT REFERENCES Classe(id),
-		   id_tipo INT REFERENCES Tipo(id),
-		   id_genero INT REFERENCES Genero(id),
-		   id_grau INT REFERENCES Grau(id),
-		   eh_bilingua BOOLEAN NOT NULL,
-		   tem_relacao BOOLEAN);
+CREATE TABLE Dicionario(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       		   	descricao VARCHAR(250) NOT NULL,
+		   	id_dado INT UNSIGNED NOT NULL REFERENCES Dado(id));
 
 /*
  * Tabela Sufixo
@@ -202,3 +221,87 @@ CREATE TABLE Reducao(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 		     minimo_termo INT UNSIGNED,
 		     substituir_por VARCHAR(5),
 		     execao BOOLEAN);
+
+/*
+ * Tabela Modo
+ * ===========
+ *
+ * Descrição:
+ * =========
+ *   Indica o modo verbal de ação do verbo.
+ *
+ * Exemplo:
+ * =======
+ * | id | descricao    | id_lingua |
+ * | 1	| 'Indicativo' | 1	   |
+ * | 2	| 'Subjuntivo' | 1	   |
+ */
+DROP TABLE Modo;
+CREATE TABLE Modo(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	     	  descricao VARCHAR(15) NOT NULL,
+		  id_lingua INT UNSIGNED REFERENCES Lingua(id));
+
+/*
+ * Tabela Pessoa
+ * =============
+ *
+ * Descrição:
+ * =========
+ *   Indica a pessoa para o tempo verbal.
+ *
+ * Exemplo:
+ * =======
+ * | id | id_lingua | descricao |
+ * | 1	| 1	    | 'Eu'	|
+ * | 2	| 1	    | 'Tu'	|
+ */
+DROP TABLE Pessoa;
+CREATE TABLE Pessoa(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	     	    id_lingua INT UNSIGNED NOT NULL REFERENCES Lingua(id),
+		    descrição VARCHAR(10));
+
+/*
+ * Tabela Tempo
+ * ============
+ *
+ * Descrição:
+ * =========
+ *   Indica o tempo verbal a ser conjugado.
+ *
+ * Exemplo:
+ * =======
+ * | id | descricao	       | id_modo |
+ * | 1	| 'Presente'   	       | 1       |
+ * | 2	| 'Pretérito Perfeito' | 1	 |
+ */
+DROP TABLE Tempo;
+CREATE TABLE Tempo(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	     	   descricao VARCHAR(20),
+		   id_modo INT UNSIGNED NOT NULL REFERENCES Modo(id));
+
+/*
+ * Tabela Grupo
+ * ============
+ *
+ * Descrição:
+ * =========
+ *   Informa o tipo do verbo, se ele é auxiliar, regular e etc.
+ *
+ * Exemplo:
+ * =======
+ * | id | descricao	      |
+ * | 1	| 'Verbos auxiliares' |
+ * | 2	| 'Verbos regulares'  |
+ */
+DROP TABLE Grupo;
+CREATE TABLE Grupo(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	     	   descricao VARCHAR(50));
+
+/*
+ * Tabela Modelo
+ * =============
+ *
+ * Descrição:
+ * =========
+ *   
+ */
