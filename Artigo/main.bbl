@@ -1,0 +1,18 @@
+\begin{thebibliography}{1}
+
+\bibitem{bird:2009}
+Steven Bird, Ewan Klein, and Edward Loper.
+\newblock {\em Natural Language Processing with Python}.
+\newblock O'Reilly Media, 1 edition, 7 2009.
+
+\bibitem{russell:2009}
+Stuart Russell and Peter Norvig.
+\newblock {\em Artificial Intelligence: A Modern Approach}.
+\newblock Pearson, 3 edition, 12 2009.
+
+\bibitem{turing:1950}
+Alan~M. Turing.
+\newblock Computing machinery and intelligence.
+\newblock {\em Mind}, pages 433--460, 1950.
+
+\end{thebibliography}

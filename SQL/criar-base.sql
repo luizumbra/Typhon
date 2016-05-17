@@ -70,13 +70,14 @@ CREATE TABLE Lingua(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
  *
  * Exemplo:
  * =======
- * | id | id_lingua | descricao     | cod   |
- * | 1	| 1	    | 'Substantivo' | 'sub' |
- * | 2	| 1	    | 'Artigo'      | 'art' |
- * | 3	| 1	    | 'Adjetivo'    | 'adj' |
+ * | id | id_interno | id_lingua | descricao     | cod   |
+ * | 1	| 1	     | 1	 | 'Substantivo' | 'sub' |
+ * | 2	| 2	     | 1	 | 'Artigo'      | 'art' |
+ * | 3	| 3	     | 1	 | 'Adjetivo'    | 'adj' |
  */
 DROP TABLE Classe;
 CREATE TABLE Classe(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	     	    id_interno UNSIGNED NOT NULL,
 		    id_lingua INT UNSIGNED NOT NULL REFERENCES Lingua(id),
 		    descricao VARCHAR(25),
 		    cod VARCHAR(3));
@@ -91,13 +92,14 @@ CREATE TABLE Classe(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
  *
  * Exemplo:
  * =======
- * | id | id_classe | descricao |
- * | 1	| 1	    | 'Comum'   |
- * | 1	| 1	    | 'Próprio' |
+ * | id | id_classe | id_lingua | descricao |
+ * | 1	| 1	    | 1		| 'Comum'   |
+ * | 1	| 1	    | 1		| 'Próprio' |
  */
 DROP TABLE Tipo;
 CREATE TABLE Tipo(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
        	     	  id_classe INT UNSIGNED NOT NULL REFERENCES Classe(id),
+		  id_lingua INT UNSIGNED NOT NULL REFERENCES Lingua(id),
 		  descricao VARCHAR(25));
 
 /*
@@ -110,13 +112,14 @@ CREATE TABLE Tipo(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
  *
  * Exemplo:
  * =======
- * | id | id_classe | descricao	  |
- * | 1	| 1	    | 'masculino' |
- * | 2	| 1	    | 'feminino'  |
+ * | id | id_classe | id_lingua | descricao   |
+ * | 1	| 1	    | 1		| 'masculino' |
+ * | 2	| 1	    | 1		| 'feminino'  |
  */
 DROP TABLE Genero
 CREATE TABLE Genero(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
        	     	    id_classe INT UNSIGNED NOT NULL REFERENCES Classe(id),
+		    id_lingua INT UNSIGNED NOT NULL REFERENCES Lingua(id),
 		    descricao VARCHAR(25));
 
 /*
@@ -130,12 +133,13 @@ CREATE TABLE Genero(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
  *
  * Exemplo:
  * =======
- * | id | id_classe | descricao	    |
- * | 1	| 1	    | 'aumentativo' |
- * | 2	| 1	    | 'diminutivo'  |
+ * | id | id_interno | id_classe | descricao	 |
+ * | 1	| 1	     | 1	 | 'aumentativo' |
+ * | 2	| 2	     | 1	 | 'diminutivo'  |
  */
 DROP TABLE Grau;
 CREATE TABLE Grau(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	          id_interno INT UNSIGNED NOT NULL,
        	     	  id_classe INT UNSIGNED NOT NULL REFERENCES Classe(id),
 		  grau VARCHAR(25));
 
@@ -251,12 +255,13 @@ CREATE TABLE Modo(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
  *
  * Exemplo:
  * =======
- * | id | id_lingua | descricao |
- * | 1	| 1	    | 'Eu'	|
- * | 2	| 1	    | 'Tu'	|
+ * | id | id_interno | id_lingua | descricao |
+ * | 1	| 1	     | 1	 | 'Eu'	     |
+ * | 2	| 2	     | 1	 | 'Tu'	     |
  */
 DROP TABLE Pessoa;
 CREATE TABLE Pessoa(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	     	    id_interno INT UNSIGNED NOT NULL,
        	     	    id_lingua INT UNSIGNED NOT NULL REFERENCES Lingua(id),
 		    descrição VARCHAR(10));
 
@@ -270,12 +275,14 @@ CREATE TABLE Pessoa(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
  *
  * Exemplo:
  * =======
- * | id | descricao	       | id_modo |
- * | 1	| 'Presente'   	       | 1       |
- * | 2	| 'Pretérito Perfeito' | 1	 |
+ * | id | id_interno | id_lingua | descricao	        | id_modo |
+ * | 1	| 1	     | 1	 | 'Presente'   	| 1       |
+ * | 2	| 2	     | 1	 | 'Pretérito Perfeito' | 1	  |
  */
 DROP TABLE Tempo;
 CREATE TABLE Tempo(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	     	   id_interno INT UNSIGNED NOT NULL,
+		   id_lingua INT UNSIGNED NOT NULL REFERENCES Lingua(id),
        	     	   descricao VARCHAR(20),
 		   id_modo INT UNSIGNED NOT NULL REFERENCES Modo(id));
 
@@ -303,5 +310,56 @@ CREATE TABLE Grupo(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
  *
  * Descrição:
  * =========
- *   
+ *   Modelo dos verbos auxiliares.
+ * 
+ * Exemplo:
+ * =======
+ * | id | id_regra | id_tempo | id_pessoa | modelo |
+ * | 1	| 1	   | 1	      | 1	  | 'sou'  |
+ * | 2	| 1	   | 1	      | 2	  | 'és'   |
  */
+DROP TABLE Modelo;
+CREATE TABLE Modelo(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	     	    id_regra INT NOT NULL REFERENCES Regras(id),
+		    id_tempo INT NOT NULL REFERENCES Tempo(id),
+		    id_pessoa INT NOT NULL REFERENCES Pessoa(id),
+		    modelo VARCHAR(10));
+
+/*
+ * Tabela RegrasVerbo
+ * ==================
+ *
+ * Descrição:
+ * =========
+ *   Regras verbais.
+ *
+ * Exemplo:
+ * =======
+ * | id | id_grupo | regra   |
+ * | 1  | 0	   | 'Ser    |
+ * | 2  | 0 	   | 'Estar' |
+ */
+DROP TABLE RegrasVerbo;
+CREATE TABLE RegrasVerbo(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	     		 id_grupo INT NOT NULL REFERENCES Grupo(id),
+			 regra VARCHAR(25));
+
+/*
+ * Tabela Verbo
+ * ============
+ *
+ * Descrição:
+ * =========
+ *   Tabela contendo os verbos.
+ *
+ * Exemplo:
+ * =======
+ * | id | verbo		| id_regra | id_dicionario |
+ * | 1	| 'abacharelar' | 5	   | 45		   |
+ * | 2  | 'abaetar'	| 5	   | 53		   |
+ */
+DROP TABLE Verbo;
+CREATE TABLE Verbo(id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       	     	   verbo VARCHAR(25) NOT NULL,
+		   id_regra INT NOT NULL REFERENCES RegrasVerbo(id),
+		   id_dicionario INT NOT NULL REFERENCES Dicionario(id));
